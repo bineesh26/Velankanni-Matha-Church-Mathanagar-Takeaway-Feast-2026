@@ -13,12 +13,52 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..'))); // Serve static front-end assets using absolute directory path
 
-// Middleware to ensure database connection is configured for API routes
-app.use('/api', (req, res, next) => {
+// Database connection caching variables (initialized globally for serverless reuse)
+let cachedDb = null;
+let cachedPromise = null;
+
+async function connectToDatabase() {
+    if (!MONGODB_URI) {
+        throw new Error('MONGODB_URI is not defined');
+    }
+    if (cachedDb && mongoose.connection.readyState === 1) {
+        return cachedDb;
+    }
+
+    if (!cachedPromise) {
+        const opts = {
+            bufferCommands: false, // Fail fast if connection is lost, rather than buffering and timing out
+            serverSelectionTimeoutMS: 5000, // Timeout connection selection after 5s
+        };
+        cachedPromise = mongoose.connect(MONGODB_URI, opts).then(async (mongooseInstance) => {
+            console.log('Successfully connected to MongoDB Cluster');
+            // Run database seeder on connection establishment
+            await seedDatabase();
+            return mongooseInstance;
+        });
+    }
+
+    try {
+        cachedDb = await cachedPromise;
+    } catch (e) {
+        cachedPromise = null; // Clear cached promise on failure to allow retry on subsequent requests
+        throw e;
+    }
+    return cachedDb;
+}
+
+// Middleware to ensure database connection is configured and active for API routes
+app.use('/api', async (req, res, next) => {
     if (!MONGODB_URI) {
         return res.status(500).json({ error: 'Database connection string (MONGODB_URI) is not configured in Vercel environment variables.' });
     }
-    next();
+    try {
+        await connectToDatabase();
+        next();
+    } catch (err) {
+        console.error('Database connection error in middleware:', err);
+        return res.status(500).json({ error: 'Failed to connect to the database. Please try again later.' });
+    }
 });
 
 // --- MongoDB Schemas & Models ---
@@ -202,28 +242,24 @@ if (!MONGODB_URI) {
     console.error('CRITICAL ERROR: MONGODB_URI is not defined in the environment variables!');
     console.error('Please configure your database connection string in the Vercel Settings or .env file.');
     console.error('========================================================================\n');
-} else {
-    mongoose.connect(MONGODB_URI)
-        .then(async () => {
-            console.log('Successfully connected to MongoDB Cluster');
-            await seedDatabase();
-
-            if (!process.env.VERCEL) {
-                app.listen(PORT, () => {
-                    console.log(`Server is running on http://localhost:${PORT}`);
-                    
-                    // Automatically open the app in the default browser
-                    const { exec } = require('child_process');
-                    const url = `http://localhost:${PORT}`;
-                    
-                    // Determine the command based on the OS (Mac uses 'open', Windows uses 'start', Linux uses 'xdg-open')
-                    const command = process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open';
-                    exec(`${command} ${url}`);
-                });
-            }
+} else if (!process.env.VERCEL) {
+    // Only connect immediately and start Express listener in local development (non-Vercel environment)
+    connectToDatabase()
+        .then(() => {
+            app.listen(PORT, () => {
+                console.log(`Server is running on http://localhost:${PORT}`);
+                
+                // Automatically open the app in the default browser
+                const { exec } = require('child_process');
+                const url = `http://localhost:${PORT}`;
+                
+                // Determine the command based on the OS (Mac uses 'open', Windows uses 'start', Linux uses 'xdg-open')
+                const command = process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open';
+                exec(`${command} ${url}`);
+            });
         })
         .catch(err => {
-            console.error('Database connection error:', err);
+            console.error('Database connection error at startup:', err);
         });
 }
 
