@@ -651,7 +651,7 @@
             right: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==') repeat;
             pointer-events: none;
         }
 
@@ -671,6 +671,7 @@
             text-align: left;
             position: relative;
             z-index: 2;
+            flex-grow: 1;
         }
 
         .ad-logo {
@@ -683,20 +684,25 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 1.5rem;
+            display: block;
         }
 
         .ad-title {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            line-height: 1;
+            line-height: 1.1;
             font-family: 'Inter', 'Jost', sans-serif;
+            margin: 0;
+            text-align: left;
         }
 
         .ad-title-main {
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             font-weight: 900;
             letter-spacing: -0.03em;
+            color: #ffffff;
+            display: block;
         }
 
         .ad-title-sub {
@@ -706,6 +712,7 @@
             letter-spacing: 0.35em;
             margin-top: 0.4rem;
             text-transform: uppercase;
+            display: block;
         }
 
         .ad-desc {
@@ -715,6 +722,7 @@
             line-height: 1.6;
             margin: 0 0 1.8rem 0;
             font-family: 'Inter', 'Jost', sans-serif;
+            display: block;
         }
 
         .ad-contact {
@@ -743,6 +751,7 @@
         .ad-btn svg {
             width: 18px;
             height: 18px;
+            fill: currentColor;
         }
 
         .ad-btn:hover {
