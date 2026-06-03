@@ -1356,7 +1356,7 @@
                         <td style="${tdStyle()}">Rs. ${x(String(order.total))}</td>
                         <td style="${tdStyle()}">${x(order.notes || '-')}</td>
                         <td style="${tdStyle()}">${x(dateStr)}</td>
-                        <td style="${tdStyle()}"></td>
+                        <td style="${tdStyle()}">${order.delivered ? 'Yes' : 'No'}</td>
                       </tr>`;
             }).join('')}
                 </tbody>
