@@ -11,7 +11,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname)); // Serve static front-end assets using absolute directory path
+app.use(express.static(path.join(__dirname, '..'))); // Serve static front-end assets using absolute directory path
 
 // Middleware to ensure database connection is configured for API routes
 app.use('/api', (req, res, next) => {
