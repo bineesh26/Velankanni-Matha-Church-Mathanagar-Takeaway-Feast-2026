@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+
+# Local env files (contain database credentials)
+.env
+
+# System files
+.DS_Store
+Thumbs.db

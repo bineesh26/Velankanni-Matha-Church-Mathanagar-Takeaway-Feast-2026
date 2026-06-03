@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Takeaway Feast 2026</title>
+    <link rel="icon" type="image/png" href="../VMCW.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+Malayalam:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #F8F7F4;
+            --card: #FFFFFF;
+            --border: #EBEBEB;
+            --gold: #B8841E;
+            --gold-bg: #FDF6E8;
+            --gold-border: #F0D899;
+            --text: #111111;
+            --muted: #888888;
+            --light: #CCCCCC;
+            --green: #2E7D52;
+            --green-bg: #F0FAF5;
+            --green-border: rgba(46, 125, 82, 0.2);
+            --orange: #C06B12;
+            --orange-bg: #FFF4EA;
+            --orange-border: rgba(192, 107, 18, 0.25);
+            --radius: 10px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: contain;
+            border: 1.5px solid var(--gold-border);
+            padding: 2px;
+            background: #fff;
+        }
+
+        .brand-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .brand-sep {
+            color: var(--light);
+            margin: 0 0.1rem;
+            font-weight: 300;
+        }
+
+        .brand-sub {
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.73rem;
+            font-weight: 500;
+        }
+
+        .chip-live {
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid var(--green-border);
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 7px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--muted);
+        }
+
+        .btn:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .btn svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .btn-refresh {
+            color: var(--gold);
+            border-color: var(--gold-border);
+            background: var(--gold-bg);
+        }
+
+        .btn-refresh:hover {
+            background: #faedc5;
+        }
+
+        .btn-refresh.spinning svg {
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── LAYOUT ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 2.5rem;
+        }
+
+        /* ── STATS GRID ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.4rem;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card.delivered-card {
+            border-color: var(--green-border);
+            background: var(--green-bg);
+            cursor: pointer;
+            transition: box-shadow 0.2s ease, transform 0.15s ease;
+        }
+
+        .stat-card.delivered-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 82, 0.15);
+        }
+
+        .stat-card.delivered-card.active-filter {
+            box-shadow: 0 0 0 3px var(--green), var(--shadow);
+        }
+
+        .stat-card.pending-card {
+            border-color: var(--orange-border);
+            background: var(--orange-bg);
+            cursor: pointer;
+            transition: box-shadow 0.2s ease, transform 0.15s ease;
+        }
+
+        .stat-card.pending-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192, 107, 18, 0.15);
+        }
+
+        .stat-card.pending-card.active-filter {
+            box-shadow: 0 0 0 3px var(--orange), var(--shadow);
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .delivered-card .stat-tag {
+            color: var(--green);
+        }
+
+        .pending-card .stat-tag {
+            color: var(--orange);
+        }
+
+        .stat-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon svg {
+            width: 14px;
+            height: 14px;
+            color: var(--gold);
+        }
+
+        .stat-icon.green {
+            background: rgba(46, 125, 82, 0.08);
+            border-color: var(--green-border);
+        }
+
+        .stat-icon.green svg {
+            color: var(--green);
+        }
+
+        .stat-icon.orange {
+            background: rgba(192, 107, 18, 0.08);
+            border-color: var(--orange-border);
+        }
+
+        .stat-icon.orange svg {
+            color: var(--orange);
+        }
+
+        .stat-num {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .delivered-card .stat-num {
+            color: var(--green);
+        }
+
+        .pending-card .stat-num {
+            color: var(--orange);
+        }
+
+        /* ── MAIN CARD ── */
+        .main-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .card-sub {
+            font-size: 0.77rem;
+            color: var(--muted);
+            margin-top: 0.1rem;
+        }
+
+        .search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 0.38rem 0.8rem;
+            transition: border-color 0.15s;
+        }
+
+        .search-wrap:focus-within {
+            border-color: var(--gold);
+        }
+
+        .search-wrap svg {
+            width: 13px;
+            height: 13px;
+            color: var(--light);
+            flex-shrink: 0;
+        }
+
+        .search-wrap input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            width: 190px;
+        }
+
+        .search-wrap input::placeholder {
+            color: var(--light);
+        }
+
+        /* ── TABLE ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            background: var(--bg);
+            padding: 0.65rem 1.2rem;
+            text-align: left;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+        }
+
+        thead th:last-child {
+            text-align: center;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            font-size: 0.82rem;
+            color: var(--text);
+            border-bottom: 1px solid #F5F5F5;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background 0.1s;
+        }
+
+        tbody tr:hover td {
+            background: #FAFAFA;
+        }
+
+        /* Delivered row dim */
+        tbody tr.is-delivered td {
+            opacity: 0.5;
+        }
+
+        tbody tr.is-delivered:hover td {
+            opacity: 0.75;
+            background: #FAFAFA;
+        }
+
+        .ref {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.04em;
+        }
+
+        .cust-name {
+            font-weight: 500;
+            font-size: 0.84rem;
+        }
+
+        .cust-phone {
+            font-size: 0.74rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
+
+        .addr {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .qty-pill {
+            display: inline-flex;
+            align-items: center;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold-border);
+            color: var(--gold);
+            padding: 0.18rem 0.55rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .item-detail {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 0.22rem;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .total-amt {
+            font-weight: 700;
+        }
+
+        .notes-txt {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--muted);
+            font-style: italic;
+            font-size: 0.78rem;
+        }
+
+        .date-val {
+            font-size: 0.79rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .time-val {
+            font-size: 0.71rem;
+            color: var(--light);
+        }
+
+        /* ── DELIVERED TOGGLE ── */
+        .toggle-cell {
+            text-align: center;
+        }
+
+        .toggle-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .toggle {
+            position: relative;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: #E0E0E0;
+            border-radius: 20px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .toggle-track::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        .toggle input:checked+.toggle-track {
+            background: var(--green);
+        }
+
+        .toggle input:checked+.toggle-track::after {
+            transform: translateX(16px);
+        }
+
+        .toggle-label {
+            font-size: 0.73rem;
+            font-weight: 500;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .toggle input:checked~.toggle-label,
+        .is-delivered .toggle-label {
+            color: var(--green);
+        }
+
+        /* status badge alternative (shown in small screens) */
+        .status-badge {
+            display: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.55rem;
+            border-radius: 20px;
+        }
+
+        .status-done {
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid var(--green-border);
+        }
+
+        .status-pending {
+            background: var(--orange-bg);
+            color: var(--orange);
+            border: 1px solid var(--orange-border);
+        }
+
+        /* ── EMPTY ── */
+        .empty {
+            padding: 3.5rem;
+            text-align: center;
+        }
+
+        .empty svg {
+            width: 36px;
+            height: 36px;
+            margin: 0 auto 0.75rem;
+            display: block;
+            color: var(--light);
+        }
+
+        .empty p {
+            font-size: 0.84rem;
+            color: var(--muted);
+        }
+
+        /* ── TOAST ── */
+        .toasts {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 0.65rem 1rem;
+            border-radius: 7px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.2s, transform 0.2s;
+            max-width: 260px;
+            font-weight: 500;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.ok {
+            background: var(--green);
+        }
+
+        .toast.err {
+            background: #C44;
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(3px);
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 20px;
+            padding: 2.2rem;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: auto;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-body {
+            font-size: 1.05rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            line-height: 1.55;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+        }
+
+        .modal-btn {
+            padding: 0.65rem 1.6rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-cancel {
+            background: #F8F7F4;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .modal-btn-cancel:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .modal-btn-confirm {
+            background: var(--orange);
+            color: #fff;
+        }
+
+        .modal-btn-confirm:hover {
+            filter: brightness(0.9);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1000px) {
+            .stats-row {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header,
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .brand-sub,
+            .brand-sep,
+            .chip-live {
+                display: none;
+            }
+
+            /* Hide button text on mobile, just keep icons */
+            .header-actions .btn-text {
+                display: none;
+            }
+
+            .header-actions .btn {
+                padding: 0.4rem 0.6rem;
+                /* smaller padding for icon-only button */
+            }
+
+            .search-wrap input {
+                width: 130px;
+            }
+
+            /* Responsive Card Table for Mobile */
+            .main-card table thead {
+                display: none;
+            }
+
+            .main-card table,
+            .main-card tbody,
+            .main-card tr,
+            .main-card td {
+                display: block;
+                width: 100%;
+            }
+
+            .main-card tbody tr {
+                margin-bottom: 1.25rem;
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            .main-card tbody tr td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.8rem 1rem;
+                border-bottom: 1px solid var(--border);
+                text-align: right;
+            }
+
+            .main-card tbody tr td:last-child {
+                border-bottom: none;
+            }
+
+            .main-card tbody tr td::before {
+                content: attr(data-label);
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-right: 1rem;
+            }
+
+            /* Realign content inside the flex td */
+            .cust-name,
+            .cust-phone,
+            .date-val,
+            .time-val {
+                text-align: right;
+            }
+
+            .addr,
+            .notes-txt {
+                text-align: right;
+                max-width: 65%;
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
+            .toggle-cell {
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand">
+            <img src="../VMC-T.png" alt="Logo" class="brand-logo">
+            <span class="brand-name">Takeaway Feast 2026</span>
+            <span class="brand-sep">/</span>
+            <span class="brand-sub">Orders Dashboard</span>
+        </div>
+        <div class="header-actions">
+            <div class="chip chip-live">
+                <span class="live-dot"></span>Live
+            </div>
+            <button class="btn" onclick="downloadPDF()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span class="btn-text">Export PDF</span>
+            </button>
+            <button class="btn btn-refresh" id="refresh-btn" onclick="load()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 4 23 10 17 10" />
+                    <polyline points="1 20 1 14 7 14" />
+                    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+                </svg>
+                <span class="btn-text">Refresh</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- STATS -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-tag">Orders</span>
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-num" id="s-orders">—</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-tag">Plates</span>
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M8 12h8M12 8v8" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-num" id="s-plates">—</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-tag">Revenue</span>
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-num" id="s-revenue">—</div>
+            </div>
+
+            <div class="stat-card delivered-card" id="delivered-card" onclick="filterByStatus('delivered')">
+                <div class="stat-top">
+                    <span class="stat-tag">Delivered</span>
+                    <div class="stat-icon green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-num" id="s-delivered">—</div>
+            </div>
+
+            <div class="stat-card pending-card" id="pending-card" onclick="filterByStatus('pending')">
+                <div class="stat-top">
+                    <span class="stat-tag">Pending</span>
+                    <div class="stat-icon orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-num" id="s-pending">—</div>
+            </div>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="main-card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">All Pre-Orders</div>
+                    <div class="card-sub" id="order-sub">Loading…</div>
+                </div>
+                <div class="search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="q" placeholder="Search name, phone, parish…" oninput="filter()">
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ref</th>
+                            <th>Customer</th>
+                            <th>Parish</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Notes</th>
+                            <th>Date</th>
+                            <th style="text-align:center;">Delivered</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <tr>
+                            <td colspan="8">
+                                <div class="empty">
+                                    <p>Loading orders…</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TOASTS -->
+    <div class="toasts" id="toasts"></div>
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-card">
+            <div class="modal-title" id="modal-title">Confirm Action</div>
+            <div class="modal-body" id="modal-body">Are you sure?</div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeModal(false)">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="closeModal(true)">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Use relative path — works whether opened via file:// or served from Express
+        const API = (window.location.protocol === 'file:') ? 'http://localhost:3000/api' : '/api';
+        let orders = [];
+
+        let loading = false;
+
+        async function load() {
+            if (loading) return;
+            loading = true;
+
+            const btn = document.getElementById('refresh-btn');
+            btn.classList.add('spinning');
+
+            // Fetch stats and orders independently so one failure doesn't block the other
+            await Promise.allSettled([
+                loadStats(),
+                loadOrders()
+            ]);
+
+            btn.classList.remove('spinning');
+            loading = false;
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API}/stats`);
+                if (!res.ok) throw new Error(`${res.status}`);
+                const stats = await res.json();
+                document.getElementById('s-orders').textContent = stats.totalOrders;
+                document.getElementById('s-delivered').textContent = stats.deliveredCount ?? 0;
+                document.getElementById('s-pending').textContent = stats.pendingCount ?? stats.totalOrders;
+                document.getElementById('s-plates').textContent = stats.totalPlates;
+                document.getElementById('s-revenue').textContent = '₹' + fmt(stats.totalRevenue);
+            } catch (e) {
+                console.warn('Stats fetch failed:', e.message);
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API}/orders`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                orders = await res.json();
+                filter(); // Re-apply the current search and status filters
+            } catch (e) {
+                console.error('Orders fetch failed:', e);
+                document.getElementById('order-sub').textContent = 'Could not load orders';
+                document.getElementById('tbody').innerHTML = errHtml();
+            }
+        }
+
+
+        function render(list) {
+            const tb = document.getElementById('tbody');
+            if (!list.length) {
+                tb.innerHTML = `<tr><td colspan="8"><div class="empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
+                </svg>
+                <p>No orders yet.</p></div></td></tr>`;
+                return;
+            }
+
+            tb.innerHTML = list.map(o => {
+                const ref = '#' + o._id.slice(-6).toUpperCase();
+                const qty = o.items.reduce((s, i) => s + i.quantity, 0);
+                const names = o.items.map(i => `${i.name} ×${i.quantity}`).join(', ');
+                const d = new Date(o.createdAt);
+                const date = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+                const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                const delivered = !!o.delivered;
+
+                return `<tr class="${delivered ? 'is-delivered' : ''}">
+                <td data-label="Ref"><span class="ref">${ref}</span></td>
+                <td data-label="Customer">
+                    <div>
+                        <div class="cust-name">${x(o.name)}</div>
+                        <div class="cust-phone">${x(o.phone)}</div>
+                    </div>
+                </td>
+                <td data-label="Parish"><span class="addr" title="${x(o.address)}">${x(o.address)}</span></td>
+                <td data-label="Items">
+                    <span class="qty-pill">${qty} plate${qty !== 1 ? 's' : ''}</span>
+                </td>
+                <td data-label="Total"><span class="total-amt">₹${fmt(o.total)}</span></td>
+                <td data-label="Notes"><span class="notes-txt" title="${x(o.notes || '')}">${o.notes ? x(o.notes) : '—'}</span></td>
+                <td data-label="Date">
+                    <div>
+                        <div class="date-val">${date}</div>
+                        <div class="time-val">${time}</div>
+                    </div>
+                </td>
+                <td data-label="Status" class="toggle-cell">
+                    <label class="toggle-wrap" title="${delivered ? 'Mark as pending' : 'Mark as delivered'}">
+                        <span class="toggle">
+                            <input type="checkbox" ${delivered ? 'checked' : ''} onchange="toggleDeliver('${o._id}', this)">
+                            <span class="toggle-track"></span>
+                        </span>
+                        <span class="toggle-label">${delivered ? 'Done' : 'Pending'}</span>
+                    </label>
+                </td>
+            </tr>`;
+            }).join('');
+        }
+
+        let modalCallback = null;
+
+        function showConfirmModal(title, text, callback) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = text;
+            document.getElementById('confirm-modal').classList.add('active');
+            modalCallback = callback;
+        }
+
+        function closeModal(confirmed) {
+            document.getElementById('confirm-modal').classList.remove('active');
+            if (modalCallback) {
+                modalCallback(confirmed);
+                modalCallback = null;
+            }
+        }
+
+        async function toggleDeliver(id, checkbox) {
+            const row = checkbox.closest('tr');
+            const label = checkbox.closest('.toggle-wrap').querySelector('.toggle-label');
+            const checked = checkbox.checked;
+
+            if (checked) {
+                // Keep it unchecked visually while modal is open
+                checkbox.checked = false;
+
+                showConfirmModal(
+                    "Mark as Delivered",
+                    "Are you sure you want to mark this order as delivered?",
+                    async (confirmed) => {
+                        if (!confirmed) return; // User canceled
+
+                        // User confirmed, proceed with checking
+                        checkbox.checked = true;
+                        await performToggleRequest(id, checkbox, row, label, true);
+                    }
+                );
+                return;
+            } else {
+                // Keep it checked visually while modal is open
+                checkbox.checked = true;
+
+                showConfirmModal(
+                    "Mark as Pending",
+                    "Are you sure you want to mark this order as pending again?",
+                    async (confirmed) => {
+                        if (!confirmed) return; // User canceled
+
+                        // User confirmed, proceed with unchecking
+                        checkbox.checked = false;
+                        await performToggleRequest(id, checkbox, row, label, false);
+                    }
+                );
+                return;
+            }
+        }
+
+        async function performToggleRequest(id, checkbox, row, label, checked) {
+            // Optimistic UI update
+            row.classList.toggle('is-delivered', checked);
+            label.textContent = checked ? 'Done' : 'Pending';
+
+            try {
+                const res = await fetch(`${API}/orders/${id}/deliver`, { method: 'PATCH' });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+
+                // Sync with actual server value
+                checkbox.checked = data.delivered;
+                row.classList.toggle('is-delivered', data.delivered);
+                label.textContent = data.delivered ? 'Done' : 'Pending';
+
+                // Update the local orders array
+                const idx = orders.findIndex(o => o._id === id);
+                if (idx > -1) orders[idx].delivered = data.delivered;
+
+                // Refresh stats silently
+                refreshStats();
+                filter(); // Re-apply current filters to immediately hide/show updated item if needed
+                toast(data.delivered ? 'Marked as delivered.' : 'Marked as pending.', 'ok');
+            } catch {
+                // Revert on failure
+                checkbox.checked = !checked;
+                row.classList.toggle('is-delivered', !checked);
+                label.textContent = !checked ? 'Done' : 'Pending';
+                toast('Failed to update order.', 'err');
+            }
+        }
+
+        async function refreshStats() {
+            await loadStats();
+        }
+
+
+        let statusFilter = null; // null = all, 'delivered', 'pending'
+
+        function filterByStatus(status) {
+            // Toggle: click same card again to clear filter
+            if (statusFilter === status) {
+                statusFilter = null;
+            } else {
+                statusFilter = status;
+            }
+
+            // Update active-filter visual on cards
+            document.getElementById('delivered-card').classList.toggle('active-filter', statusFilter === 'delivered');
+            document.getElementById('pending-card').classList.toggle('active-filter', statusFilter === 'pending');
+
+            filter();
+        }
+
+        function filter() {
+            const q = document.getElementById('q').value.toLowerCase().trim();
+            let res = orders;
+
+            // Apply status filter
+            if (statusFilter === 'delivered') {
+                res = res.filter(o => !!o.delivered);
+            } else if (statusFilter === 'pending') {
+                res = res.filter(o => !o.delivered);
+            }
+
+            // Apply text search
+            if (q) {
+                res = res.filter(o =>
+                    o.name.toLowerCase().includes(q) ||
+                    o.phone.toLowerCase().includes(q) ||
+                    o.address.toLowerCase().includes(q) ||
+                    (o.notes && o.notes.toLowerCase().includes(q)));
+            }
+
+            render(res);
+
+            // Build subtitle
+            let sub = '';
+            const label = statusFilter === 'delivered' ? 'delivered' : statusFilter === 'pending' ? 'pending' : '';
+            if (q && statusFilter) {
+                sub = `${res.length} of ${orders.length} orders (${label}, filtered)`;
+            } else if (q) {
+                sub = `${res.length} of ${orders.length} orders`;
+            } else if (statusFilter) {
+                sub = `${res.length} ${label} order${res.length !== 1 ? 's' : ''}`;
+            } else {
+                sub = `${orders.length} order${orders.length !== 1 ? 's' : ''} total`;
+            }
+            document.getElementById('order-sub').textContent = sub;
+        }
+
+        function toast(msg, type = '') {
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.textContent = msg;
+            document.getElementById('toasts').appendChild(t);
+            setTimeout(() => t.classList.add('show'), 10);
+            setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        function fmt(n) { return Number(n).toLocaleString('en-IN'); }
+        function x(s) {
+            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function errHtml() {
+            return `<tr><td colspan="8"><div class="empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <p>Cannot connect. Is <strong>node server.js</strong> running?</p>
+        </div></td></tr>`;
+        }
+
+        function downloadPDF() {
+            if (!orders || orders.length === 0) {
+                toast('No orders to download', 'err');
+                return;
+            }
+
+            toast('Preparing PDF…', 'ok');
+
+            // Use currently filtered orders (respecting both statusFilter and search query q)
+            const q = document.getElementById('q').value.toLowerCase().trim();
+            let dataToExport = orders;
+
+            if (statusFilter === 'delivered') {
+                dataToExport = dataToExport.filter(o => !!o.delivered);
+            } else if (statusFilter === 'pending') {
+                dataToExport = dataToExport.filter(o => !o.delivered);
+            }
+
+            if (q) {
+                dataToExport = dataToExport.filter(o =>
+                    o.name.toLowerCase().includes(q) ||
+                    o.phone.toLowerCase().includes(q) ||
+                    o.address.toLowerCase().includes(q) ||
+                    (o.notes && o.notes.toLowerCase().includes(q))
+                );
+            }
+
+            // Build a hidden HTML table that the browser renders (supports Malayalam)
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = [
+                'position:fixed', 'top:-9999px', 'left:-9999px',
+                'width:1122px',   // A4 landscape px at 96dpi
+                'background:#fff',
+                'padding:24px',
+                'font-family:"Noto Sans Malayalam","Inter",sans-serif',
+                'font-size:11px',
+                'color:#111'
+            ].join(';');
+
+            const genDate = new Date().toLocaleString('en-IN');
+            wrapper.innerHTML = `
+              <div style="margin-bottom:12px">
+                <div style="font-size:18px;font-weight:700;color:#B8841E">Takeaway Feast 2026 — Pre-Orders</div>
+                <div style="font-size:10px;color:#666;margin-top:3px">Generated on: ${genDate}</div>
+              </div>
+              <table id="pdf-table" style="width:100%;border-collapse:collapse;font-family:'Noto Sans Malayalam','Inter',sans-serif;font-size:10px">
+                <thead>
+                  <tr style="background:#B8841E;color:#fff">
+                    <th style="${thStyle()}">Ref #</th>
+                    <th style="${thStyle()}">Name</th>
+                    <th style="${thStyle()}">Phone</th>
+                    <th style="${thStyle()}">Parish</th>
+                    <th style="${thStyle()}">Items (Qty)</th>
+                    <th style="${thStyle()}">Total</th>
+                    <th style="${thStyle()}">Notes</th>
+                    <th style="${thStyle()}">Date</th>
+                    <th style="${thStyle()}">Delivered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${dataToExport.map((order, idx) => {
+                const ref = '#' + order._id.slice(-6).toUpperCase();
+                const itemsList = order.items.map(i => `${i.name} (${i.quantity})`).join(', ');
+                const dateStr = new Date(order.createdAt).toLocaleDateString('en-IN');
+                const bg = idx % 2 === 0 ? '#fff' : '#fdf6e8';
+                return `<tr style="background:${bg}">
+                        <td style="${tdStyle()}">${x(ref)}</td>
+                        <td style="${tdStyle()}">${x(order.name)}</td>
+                        <td style="${tdStyle()}">${x(order.phone)}</td>
+                        <td style="${tdStyle()}">${x(order.address)}</td>
+                        <td style="${tdStyle()}">${x(itemsList)}</td>
+                        <td style="${tdStyle()}">Rs. ${x(String(order.total))}</td>
+                        <td style="${tdStyle()}">${x(order.notes || '-')}</td>
+                        <td style="${tdStyle()}">${x(dateStr)}</td>
+                        <td style="${tdStyle()}">${order.delivered ? 'Yes' : 'No'}</td>
+                      </tr>`;
+            }).join('')}
+                </tbody>
+              </table>`;
+
+            document.body.appendChild(wrapper);
+
+            // Wait for Noto Sans Malayalam to load before capturing
+            document.fonts.ready.then(() => {
+                html2canvas(wrapper, {
+                    scale: 1.5,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    document.body.removeChild(wrapper);
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({ orientation: 'landscape', unit: 'px', format: 'a4' });
+
+                    const pageW = doc.internal.pageSize.getWidth();
+                    const pageH = doc.internal.pageSize.getHeight();
+                    const imgW = pageW;
+                    const imgH = (canvas.height / canvas.width) * imgW;
+
+                    // Use JPEG encoding for vastly improved performance and smaller PDF size
+                    const imgData = canvas.toDataURL('image/jpeg', 0.85);
+
+                    if (imgH <= pageH) {
+                        doc.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
+                    } else {
+                        // Multi-page support
+                        let yOffset = 0;
+                        const totalH = imgH;
+                        while (yOffset < totalH) {
+                            if (yOffset > 0) doc.addPage();
+                            doc.addImage(imgData, 'JPEG', 0, -yOffset, imgW, totalH);
+                            yOffset += pageH;
+                        }
+                    }
+
+                    const blob = doc.output('blob');
+                    const blobURL = URL.createObjectURL(blob);
+
+                    const confirmBtn = document.querySelector('.modal-btn-confirm');
+                    const cancelBtn = document.querySelector('.modal-btn-cancel');
+                    const oldConfirmText = confirmBtn.textContent;
+                    const oldCancelText = cancelBtn.textContent;
+
+                    confirmBtn.textContent = 'Download PDF';
+                    cancelBtn.textContent = 'Close';
+
+                    showConfirmModal(
+                        "PDF Ready",
+                        "Your PDF report has been generated successfully. Click below to download.",
+                        (confirmed) => {
+                            // Restore original modal text
+                            confirmBtn.textContent = oldConfirmText;
+                            cancelBtn.textContent = oldCancelText;
+
+                            if (confirmed) {
+                                const a = document.createElement('a');
+                                a.href = blobURL;
+                                a.download = 'Food_Fest_Orders.pdf';
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            }
+                            setTimeout(() => URL.revokeObjectURL(blobURL), 1000);
+                        }
+                    );
+                }).catch(err => {
+                    document.body.removeChild(wrapper);
+                    console.error(err);
+                    toast('PDF generation failed', 'err');
+                });
+            });
+        }
+
+        function thStyle() {
+            return 'padding:6px 8px;border:1px solid #d4a843;text-align:left;font-weight:600';
+        }
+        function tdStyle() {
+            return 'padding:5px 8px;border:1px solid #e0e0e0;text-align:left;vertical-align:top';
+        }
+
+        document.addEventListener('DOMContentLoaded', load);
+        setInterval(load, 30000);
+    </script>
+</body>
+
+</html>
