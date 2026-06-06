@@ -250,12 +250,10 @@
             left: -50%;
             width: 200%;
             height: 100%;
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
+            background: linear-gradient(to right,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(255, 255, 255, 0) 100%);
             transform: skewX(-25deg);
             transition: 0.75s;
             opacity: 0;
@@ -335,7 +333,6 @@
             padding: 8px;
             box-shadow: 0 0 0 3px var(--gold), 0 0 30px rgba(200, 151, 42, 0.4);
             flex-shrink: 0;
-            animation: float 4s ease-in-out infinite;
         }
 
         .hero-logo-ring img {
@@ -434,12 +431,10 @@
             left: -50%;
             width: 200%;
             height: 100%;
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.35) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
+            background: linear-gradient(to right,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.35) 50%,
+                    rgba(255, 255, 255, 0) 100%);
             transform: skewX(-25deg);
             transition: 0.75s;
             opacity: 0;
@@ -619,6 +614,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -733,7 +729,7 @@
             border-color: rgba(0, 210, 255, 0.25);
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(0, 210, 255, 0.15);
         }
-        }
+
 
         .partner-banner-inner::before {
             content: '';
@@ -1776,14 +1772,30 @@
             transform: translateY(0);
         }
 
-        .reveal-delay-1 { transition-delay: 0.12s; }
-        .reveal-delay-2 { transition-delay: 0.24s; }
-        .reveal-delay-3 { transition-delay: 0.36s; }
+        .reveal-delay-1 {
+            transition-delay: 0.12s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.24s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.36s;
+        }
 
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-            100% { transform: translateY(0px); }
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
         }
 
         @keyframes slideUpFade {
@@ -1791,6 +1803,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1850,7 +1863,8 @@
                 </div>
 
                 <h1 data-translate="Takeaway Feast<br><em>2026</em>">Takeaway Feast<br><em>2026</em></h1>
-                <p class="hero-committee" data-translate="By parish development committee">By parish development committee</p>
+                <p class="hero-committee" data-translate="By parish development committee">By parish development
+                    committee</p>
                 <p
                     data-translate="Taste the tradition, share the love. An extraordinary celebration of homemade delicacies and parish community spirit.">
                     Taste the tradition, share the love. An extraordinary celebration of homemade delicacies and parish
@@ -1902,8 +1916,7 @@
                 </div>
                 <div class="info-card-body">
                     <h3 data-translate="Our Mission">Our Mission</h3>
-                    <p
-                        data-translate="All proceeds support parish development and community service programmes.">
+                    <p data-translate="All proceeds support parish development and community service programmes.">
                         All proceeds support parish development and community service programmes.</p>
                 </div>
             </div>
