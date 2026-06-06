@@ -231,13 +231,40 @@
             border-radius: 3px;
             border: none;
             cursor: pointer;
-            transition: background 0.2s, transform 0.15s;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             white-space: nowrap;
+            position: relative;
+            overflow: hidden;
         }
 
         .nav-cta:hover {
             background: var(--gold-lt);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 151, 42, 0.3);
+        }
+
+        .nav-cta::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            transition: 0.75s;
+            opacity: 0;
+        }
+
+        .nav-cta:hover::after {
+            left: 125%;
+            opacity: 1;
+            transition: 0.75s ease-in-out;
         }
 
         /* ═══════════════════ HOME VIEW ═══════════════════ */
@@ -308,6 +335,7 @@
             padding: 8px;
             box-shadow: 0 0 0 3px var(--gold), 0 0 30px rgba(200, 151, 42, 0.4);
             flex-shrink: 0;
+            animation: float 4s ease-in-out infinite;
         }
 
         .hero-logo-ring img {
@@ -387,14 +415,40 @@
             border-radius: 3px;
             border: none;
             cursor: pointer;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 6px 24px rgba(200, 151, 42, 0.35);
+            position: relative;
+            overflow: hidden;
         }
 
         .hero-btn:hover {
             background: var(--gold-lt);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(200, 151, 42, 0.45);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(200, 151, 42, 0.5);
+        }
+
+        .hero-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.35) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            transition: 0.75s;
+            opacity: 0;
+        }
+
+        .hero-btn:hover::after {
+            left: 125%;
+            opacity: 1;
+            transition: 0.75s ease-in-out;
         }
 
         .hero-scroll-hint {
@@ -453,6 +507,21 @@
             align-items: flex-start;
             gap: 1rem;
             box-shadow: 0 8px 32px rgba(26, 18, 8, 0.08);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(200, 151, 42, 0.15);
+            border-color: var(--gold);
+        }
+
+        .info-card-icon {
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .info-card:hover .info-card-icon {
+            transform: scale(1.15) rotate(8deg);
         }
 
         .info-card-icon {
@@ -545,17 +614,30 @@
             gap: 1.5rem;
         }
 
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .menu-card {
             background: var(--white);
             border: 1px solid rgba(200, 151, 42, 0.15);
             border-radius: 4px;
             overflow: hidden;
-            transition: transform 0.25s, box-shadow 0.25s;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease;
+            animation: fadeInUp 0.7s cubic-bezier(0.25, 1, 0.5, 1) both;
         }
 
         .menu-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 48px rgba(26, 18, 8, 0.12);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 48px rgba(200, 151, 42, 0.18);
+            border-color: var(--gold);
         }
 
         .menu-card-img {
@@ -643,6 +725,14 @@
             gap: 3rem;
             position: relative;
             overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .partner-banner-inner:hover {
+            transform: translateY(-5px) scale(1.005);
+            border-color: rgba(0, 210, 255, 0.25);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(0, 210, 255, 0.15);
+        }
         }
 
         .partner-banner-inner::before {
@@ -961,6 +1051,7 @@
 
         #order-view.show {
             display: flex;
+            animation: slideUpFade 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
         }
 
         .order-header {
@@ -1672,6 +1763,39 @@
                 justify-content: flex-end;
             }
         }
+
+        /* ═══════════════════ REVEAL ANIMATIONS ═══════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.12s; }
+        .reveal-delay-2 { transition-delay: 0.24s; }
+        .reveal-delay-3 { transition-delay: 0.36s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -1738,7 +1862,7 @@
 
         <!-- INFO CARDS -->
         <div class="info-cards">
-            <div class="info-card">
+            <div class="info-card reveal reveal-delay-1">
                 <div class="info-card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -1754,7 +1878,7 @@
                         AM onwards</p>
                 </div>
             </div>
-            <div class="info-card">
+            <div class="info-card reveal reveal-delay-2">
                 <div class="info-card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z" />
@@ -1770,7 +1894,7 @@
                     </p>
                 </div>
             </div>
-            <div class="info-card">
+            <div class="info-card reveal reveal-delay-3">
                 <div class="info-card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
@@ -1788,7 +1912,7 @@
         <!-- MENU SECTION -->
         <section class="section" style="background: var(--cream);">
             <div class="section-inner">
-                <div class="section-header">
+                <div class="section-header reveal">
                     <div class="section-tag" data-translate="Curated Selection">Curated Selection</div>
                     <h2 class="serif" data-translate="Featured Menu Item">Featured Menu Item</h2>
                     <p data-translate="Lovingly prepared by our parish families — a feast of tradition and flavour.">
@@ -1906,7 +2030,7 @@
 
     <!-- PARTNER BANNER -->
     <div class="partner-banner">
-        <div class="partner-banner-inner">
+        <div class="partner-banner-inner reveal">
             <div class="partner-brand-col">
                 <img class="partner-logo" src="logo.png" alt="CODARK Tech Solutions Logo">
                 <h2 class="partner-title">
@@ -2234,7 +2358,7 @@
             }
 
             menuGrid.innerHTML = dbItems.map((item, idx) => `
-                <div class="menu-card" style="overflow:hidden; border-radius:8px; box-shadow:0 12px 40px rgba(26,18,8,0.13);">
+                <div class="menu-card" style="overflow:hidden; border-radius:8px; box-shadow:0 12px 40px rgba(26,18,8,0.13); animation-delay: ${idx * 0.12}s;">
                     <div style="position:relative;">
                         <img class="menu-card-img" src="${item.image}" alt="${t(item.name)}" style="height:280px; width:100%; object-fit:cover;">
                         <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(26,18,8,0.5) 0%, transparent 50%);"></div>
@@ -2366,8 +2490,31 @@
             navigateTo('home');
         }
 
+        function initScrollReveal() {
+            const revealCallback = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            };
+
+            const revealObserver = new IntersectionObserver(revealCallback, {
+                root: null,
+                threshold: 0.08,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            const elementsToReveal = document.querySelectorAll('.reveal');
+            elementsToReveal.forEach(el => revealObserver.observe(el));
+        }
+
         window.addEventListener('hashchange', handleRouting);
-        window.addEventListener('DOMContentLoaded', fetchItems);
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchItems();
+            setTimeout(initScrollReveal, 100);
+        });
         handleRouting();
 
         async function submitOrder() {
